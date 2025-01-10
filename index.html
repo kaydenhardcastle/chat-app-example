@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat app using Socket IO and Node JS</title>
+  </head>
+
+  <body
+    style="
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f1f1f1;
+    "
+  >
+    <h1
+      style="
+        font-weight: bold;
+        color: #4caf50;
+        font-size: 2rem;
+        text-align: center;
+        margin-top: 20px;
+      "
+    >
+      Node JS - Chat App
+    </h1>
+    <div>
+      <h2
+        id="logo"
+        style="
+          font-weight: 600;
+          font-size: 1.25rem;
+          text-align: center;
+          margin-top: 20px;
+          color: #333;
+        "
+      >
+        Chat using Socket io
+      </h2>
+    </div>
+    <form
+      id="form"
+      autocomplete="off"
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+      "
+    >
+      <input
+        id="myname"
+        type="text"
+        placeholder="Name"
+        style="
+          border: 1px solid #bdbdbd;
+          border-radius: 4px;
+          margin-top: 20px;
+          padding: 10px;
+          width: 250px;
+          font-size: 1rem;
+        "
+      />
+      <input
+        id="message"
+        type="text"
+        placeholder="Message"
+        style="
+          border: 1px solid #bdbdbd;
+          border-radius: 4px;
+          margin-top: 20px;
+          padding: 10px;
+          width: 250px;
+          font-size: 1rem;
+        "
+      />
+      <button
+        style="
+          background-color: #333;
+          border: none;
+          border-radius: 4px;
+          padding: 10px 20px;
+          color: white;
+          font-size: 1rem;
+          margin-top: 20px;
+          cursor: pointer;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          transition: background-color 0.3s ease;
+        "
+        onmouseover="this.style.backgroundColor='#1565c0'"
+        onmouseout="this.style.backgroundColor='#333'"
+      >
+        Send
+      </button>
+    </form>
+    <div
+      id="messageArea"
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+      "
+    ></div>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    let socket = io();
+
+    let form = document.getElementById('form');
+    let myname = document.getElementById('myname');
+    let message = document.getElementById('message');
+    let messageArea = document.getElementById('messageArea');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (message.value) {
+        socket.emit('send name', myname.value);
+        socket.emit('send message', message.value);
+        message.value = '';
+      }
+    });
+
+    socket.on('send name', (username) => {
+      let name = document.createElement('span');
+      name.style.backgroundColor = '#4caf50';
+      name.style.width = '250px';
+      name.style.marginBottom = '10px';
+      name.style.textAlign = 'center';
+      name.style.color = 'white';
+      name.textContent = username + ':';
+      messageArea.appendChild(name);
+    });
+
+    socket.on('send message', (chat) => {
+      let chatContent = document.createElement('span');
+      chatContent.textContent = chat;
+      chatContent.style.marginBottom = '20px';
+      messageArea.appendChild(chatContent);
+    });
+  </script>
+</html>
